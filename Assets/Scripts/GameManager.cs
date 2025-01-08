@@ -1,8 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using Random = UnityEngine.Random;
+
 
 public class GameManager : MonoBehaviour
 {
@@ -16,30 +19,33 @@ public class GameManager : MonoBehaviour
     int totalAros;
     GameObject arosCanvas;
     TextMeshProUGUI arosTexto;
-    int arosAtravesados = 0;
+    public int arosAtravesados = 0;
 
     // Monedas
     int totalMonedas;
     GameObject monedasCanvas;
     TextMeshProUGUI monedasTexto;
-    int monedasRecogidas = 0;
-
-    // Turbo
+    public int monedasRecogidas = 0;
 
     /* ELEMENTOS DE JUEGO */
-    // Monedas de los primeros cinco aros
+    public GameObject coinPrefab;
     public GameObject[] listaSpawnsUno;
+    public GameObject[] listaSpawnsDos;
+
 
 
     void Start()
     {
+        SpawnearMonedasUno();
+        SpawnearMonedasDos();
         IniciarInterfaz();
-        SpawnearMonedas();
     }
 
     void Update()
     {
         ActualizarCanvasTemporizador();
+        ActualizarContadorMonedas();
+        ActualizarContadorAros();
     }
 
     void IniciarInterfaz()
@@ -61,24 +67,23 @@ public class GameManager : MonoBehaviour
         arosTexto.text = "  " + arosAtravesados + " / " + totalAros;
 
         // Monedas
-        totalMonedas = GameObject.FindGameObjectsWithTag("MonedasPrimerTipo").Length;
-        totalMonedas += GameObject.FindGameObjectsWithTag("MonedasSegundoTipo").Length;
-        totalMonedas += GameObject.FindGameObjectsWithTag("MonedasTercerTipo").Length;
+        totalMonedas = GameObject.FindGameObjectsWithTag("SpawnedCoin").Length;
 
         monedasCanvas = GameObject.Find("MonedasTotales");
         monedasTexto = monedasCanvas.GetComponent<TextMeshProUGUI>();
 
         monedasTexto.text = "  " + monedasRecogidas + " / " + totalMonedas;
-
-        // Turbo
     }
 
-    void SpawnearMonedas()
+    void SpawnearMonedasUno()
     {
+        // Genera las monedas entre los primeros cinco aros
+        // Primero busca las posiciones marcadas para los aros en cuestion
         listaSpawnsUno = GameObject.FindGameObjectsWithTag("MonedasPrimerTipo");
         List<int> posicionesOcuparUno = new List<int>();
 
-        for (int i = 0; i < 10; i++)
+        // Genera una lista de cifras aleatoria para saber que huecos de la lista previa ocupar
+        for (int i = 0; i < 15; i++)
         {
             bool continua = false;
 
@@ -93,10 +98,48 @@ public class GameManager : MonoBehaviour
             }
         }
 
+        // Rellena las posiciones que la lista anterior haya generado aleatoriamente
+        for (int i = 0; i < 25; i++)
+        {
+            if (posicionesOcuparUno.Contains(i))
+            {
+                Instantiate(coinPrefab, listaSpawnsUno[i].transform.position, Quaternion.identity);
+            }
+        }
+    }
 
+    void SpawnearMonedasDos()
+    {
+        // Genera las monedas entre los siguientes tres aros
+        // Primero busca las posiciones marcadas para los aros en cuestion
+        listaSpawnsDos = GameObject.FindGameObjectsWithTag("MonedasSegundoTipo");
+        List<int> posicionesOcuparDos = new List<int>();
 
+        // Genera una lista de cifras aleatoria para saber que huecos de la lista previa ocupar
+        for (int i = 0; i < 5; i++)
+        {
+            bool continua = false;
 
-}
+            while (!continua)
+            {
+                int randomPosition = Random.Range(0, listaSpawnsDos.Length);
+                if (!posicionesOcuparDos.Contains(randomPosition))
+                {
+                    posicionesOcuparDos.Add(randomPosition);
+                    continua = true;
+                }
+            }
+        }
+
+        // Rellena las posiciones que la lista anterior haya generado aleatoriamente
+        for (int i = 0; i < 15; i++)
+        {
+            if (posicionesOcuparDos.Contains(i))
+            {
+                Instantiate(coinPrefab, listaSpawnsDos[i].transform.position, Quaternion.identity);
+            }
+        }
+    }
 
     void ActualizarCanvasTemporizador()
     {
@@ -114,4 +157,15 @@ public class GameManager : MonoBehaviour
 
         temporizadorTexto.text = string.Format("   {0:00}:{1:00}", minutos, segundos);
     }
+
+    void ActualizarContadorMonedas()
+    {
+        monedasTexto.text = "  " + monedasRecogidas + " / " + totalMonedas;
+    }
+
+    void ActualizarContadorAros()
+    {
+        arosTexto.text = "  " + arosAtravesados + " / " + totalAros;
+    }
+
 }

@@ -10,6 +10,8 @@ TagManager:
   - MonedasTercerTipo
   - Aro
   - AroCompletado
+  - SpawnedCoin
+  - Nave
   layers:
   - Default
   - TransparentFX
