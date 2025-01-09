@@ -178,6 +178,7 @@ public class GameManager : MonoBehaviour
         arosTexto.text = "  " + arosAtravesados + " / " + totalAros;
     }
 
+    // Funcion para ocultar las pantallas finales
     void HideEndScreens()
     {
         victoryScreen = GameObject.Find("VictoryScreen");
@@ -186,6 +187,7 @@ public class GameManager : MonoBehaviour
         defeatScreen.SetActive(false);
     }
 
+    // Funcion para mostrar la pantalla de victoria
     void VictoryScreenShow()
     {
         victoryScreen.SetActive(true);
@@ -197,6 +199,7 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 0;
     }
 
+    // Funcion para mostrar la pantalla de derrota
     void DefeatScreenShow()
     {
         defeatScreen.SetActive(true);

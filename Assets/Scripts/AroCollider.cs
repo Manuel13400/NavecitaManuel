@@ -6,6 +6,7 @@ using Debug = UnityEngine.Debug;
 
 public class AroCollider : MonoBehaviour
 {
+    // Conexion con el gamemanager y el aromanager
     private GameManager gameManager;
     private AroManager aroManager;
 
@@ -15,6 +16,9 @@ public class AroCollider : MonoBehaviour
         aroManager = FindObjectOfType<AroManager>();
     }
 
+    // Este script cambia el tag del aro que este atravesando la nave a AroCompletado
+    // Cambia el aro en cuestion a color rojo y aumenta la cantidad de aros atravesados
+    // Ademas, vuelve a ejecutar la funcion EstablecerAros
     void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Nave"))
