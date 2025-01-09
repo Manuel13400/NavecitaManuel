@@ -27,15 +27,23 @@ public class GameManager : MonoBehaviour
     TextMeshProUGUI monedasTexto;
     public int monedasRecogidas = 0;
 
+    // Puntuacion
+    int puntuacionFinal;
+    GameObject puntuacionCanvas;
+    TextMeshProUGUI puntuacionTexto;
+
     /* ELEMENTOS DE JUEGO */
     public GameObject coinPrefab;
     public GameObject[] listaSpawnsUno;
     public GameObject[] listaSpawnsDos;
 
+    public GameObject victoryScreen;
+    public GameObject defeatScreen;
 
 
     void Start()
     {
+        HideEndScreens();
         SpawnearMonedasUno();
         SpawnearMonedasDos();
         IniciarInterfaz();
@@ -46,6 +54,8 @@ public class GameManager : MonoBehaviour
         ActualizarCanvasTemporizador();
         ActualizarContadorMonedas();
         ActualizarContadorAros();
+
+        if (arosAtravesados == 10) { VictoryScreenShow(); }
     }
 
     void IniciarInterfaz()
@@ -148,8 +158,8 @@ public class GameManager : MonoBehaviour
 
         if (totalSegundos < 0)
         {
-            // Cambiar a pantalla derrota
             totalSegundos = 0;
+            DefeatScreenShow();
         }
 
         float minutos = Mathf.FloorToInt(totalSegundos / 60);
@@ -168,4 +178,33 @@ public class GameManager : MonoBehaviour
         arosTexto.text = "  " + arosAtravesados + " / " + totalAros;
     }
 
+    void HideEndScreens()
+    {
+        victoryScreen = GameObject.Find("VictoryScreen");
+        defeatScreen = GameObject.Find("DefeatScreen");
+        victoryScreen.SetActive(false);
+        defeatScreen.SetActive(false);
+    }
+
+    void VictoryScreenShow()
+    {
+        victoryScreen.SetActive(true);
+        puntuacionCanvas = GameObject.Find("PuntuacionFinalVic");
+        puntuacionTexto = puntuacionCanvas.GetComponent<TextMeshProUGUI>();
+        puntuacionFinal = (int)totalSegundos + (monedasRecogidas * 2);
+        puntuacionTexto.text = "Tu puntuacion final es: " + puntuacionFinal;
+
+        Time.timeScale = 0;
+    }
+
+    void DefeatScreenShow()
+    {
+        defeatScreen.SetActive(true);
+        puntuacionCanvas = GameObject.Find("PuntuacionFinalDer");
+        puntuacionTexto = puntuacionCanvas.GetComponent<TextMeshProUGUI>();
+        puntuacionFinal = (int)totalSegundos + (monedasRecogidas * 2);
+        puntuacionTexto.text = "Tu puntuacion final es: " + puntuacionFinal;
+
+        Time.timeScale = 0;
+    }
 }
